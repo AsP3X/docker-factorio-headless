@@ -12,5 +12,7 @@ RUN chmod +x /server/init_server.sh
 
 RUN chown -R factorio:factorio /server
 
+EXPOSE 34197/udp
+
 WORKDIR /server
 CMD ./init_server.sh
