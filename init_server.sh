@@ -16,10 +16,18 @@ if [ -z "$factorio_save" ]; then
 fi
 
 #########################################################################
+GAME_DIRECTORY=factorio/bin
+SAVE_DIRECTORY=factorio/saves
 
 # Download and prepare
-mkdir downloads && cd downloads
-if test -e "$factorio_install"; then
+cd /serverfiles
+if [[ ! -d "downloads" ]]; then
+    echo "Creating downloads directory"
+    mkdir downloads
+fi
+
+cd downloads
+if test -e "${factorio_install}"; then
     echo "'$factorio_install' file exists."
 else
     wget -O ${factorio_install} https://factorio.com/get-download/${factorio_version}/${factorio_variant}/linux64
@@ -27,15 +35,13 @@ fi
 
 # Preparing and installing factorio
 cd /serverfiles
-GAME_DIRECTORY=factorio/bin
 if [[ -d "$GAME_DIRECTORY" ]]; then
     echo "Directory $GAME_DIRECTORY found."
 else
-    tar -xvf /server/downloads/${factorio_install}
+    tar -xvf /serverfiles/downloads/${factorio_install}
 fi
 
 # Creating save directory
-SAVE_DIRECTORY=factorio/saves
 if [[ -d "$SAVE_DIRECTORY" ]]; then
     echo "Directory $SAVE_DIRECTORY found."
 else
@@ -45,7 +51,7 @@ fi
 # Create a new world if none was provided
 # default world name will be savegame
 cd factorio
-if test -e "./saves/$factorio_save"; then
+if test -e "./saves/$factorio_save.zip"; then
     echo "'$factorio_save' file exists."
 else
     ./bin/x64/factorio --create ./saves/${factorio_save}.zip
