@@ -31,6 +31,8 @@ if test -e "${factorio_install}"; then
     echo "'$factorio_install' file exists."
 else
     wget -O ${factorio_install} https://factorio.com/get-download/${factorio_version}/${factorio_variant}/linux64
+    wget https://github.com/OpenFactorioServerManager/factorio-server-manager/releases/download/0.10.1/factorio-server-manager-linux-0.10.1.zip
+    unzip factorio-server-manager-linux-0.10.1.zip
 fi
 
 # Preparing and installing factorio
@@ -39,6 +41,12 @@ if [[ -d "$GAME_DIRECTORY" ]]; then
     echo "Directory $GAME_DIRECTORY found."
 else
     tar -xvf /serverfiles/downloads/${factorio_install}
+fi
+
+if [[ -d "/serverfiles/factorio-server-manager" ]]; then
+    echo "Directory /serverfiles/factorio-server-managerfound."
+else
+    mv /serverfiles/downloads/factorio-server-manager /serverfiles/factorio-server-manager
 fi
 
 # Creating save directory
@@ -61,4 +69,5 @@ else
 fi
 
 # Run factorio server
-sudo -u factorio ./bin/x64/factorio --start-server ${factorio_save}
+# sudo -u factorio ./bin/x64/factorio --start-server ${factorio_save}
+cd /serverfiles/factorio-server-manager && ./factorio-server-manager --dir /serverfiles/factorio --bin /serverfiles/factorio/bin/x64/factorio --port 8080 --autostart true
