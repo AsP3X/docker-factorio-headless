@@ -2,7 +2,7 @@
 
 # Setting up environment
 if [ -z "$factorio_version" ]; then
-  factorio_version=1.1.107
+  factorio_version=1.1.109
 fi
 
 if [ -z "$factorio_variant" ]; then

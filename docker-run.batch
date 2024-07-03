@@ -1,0 +1,1 @@
+docker run -ti --name factorio-manager --rm -p 8080:8080 -p 34197:34197/udp -e factorio_save=corespace -v C:\\Users\\AsP3X\\Desktop\\factorio-testserver:/serverfiles corespace/factorio:1.1.107-b2406002-beta1
