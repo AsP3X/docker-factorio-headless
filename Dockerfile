@@ -1,7 +1,7 @@
-FROM corespace/corebase:ubuntu-23.04
+FROM corespace/corebase:ubuntu-24.04
 LABEL org.opencontainers.image.authors=corebase
 
-RUN apt update && apt install xz-utils sudo -y
+RUN apt update && apt install xz-utils sudo unzip -y
 RUN deluser ubuntu
 RUN useradd -u 1000 factorio
 
@@ -15,4 +15,4 @@ RUN chown -R factorio:factorio /server
 EXPOSE 34197/udp
 
 WORKDIR /server
-CMD ./init_server.sh
+CMD ["bash", "./init_server.sh"]
