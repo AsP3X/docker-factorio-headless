@@ -15,4 +15,4 @@ RUN chown -R factorio:factorio /server
 EXPOSE 34197/udp
 
 WORKDIR /server
-CMD ./init_server.sh
+CMD ["bash", "./init_server.sh"]
