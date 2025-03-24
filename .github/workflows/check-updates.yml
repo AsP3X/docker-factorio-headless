@@ -1,0 +1,43 @@
+name: Check Factorio Updates
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for Factorio updates
+        id: check-updates
+        run: |
+          # Get current version from init_server.sh
+          CURRENT_VERSION=$(grep "factorio_version=" init_server.sh | cut -d'=' -f2 | tr -d '"')
+          
+          # Get latest version from Factorio website
+          LATEST_VERSION=$(curl -s https://www.factorio.com/get-download/latest/headless/linux64 | grep -oP 'factorio_\K[0-9.]+(?=_headless)' | head -n1)
+          
+          if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
+            echo "New version available: $LATEST_VERSION (current: $CURRENT_VERSION)"
+            echo "new_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+            echo "has_update=true" >> $GITHUB_OUTPUT
+          else
+            echo "No new version available"
+            echo "has_update=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger Docker build on update
+        if: steps.check-updates.outputs.has_update == 'true'
+        run: |
+          # Update init_server.sh with new version
+          sed -i "s/factorio_version=.*/factorio_version=${{ steps.check-updates.outputs.new_version }}/" init_server.sh
+          
+          # Create and push a new commit
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add init_server.sh
+          git commit -m "Update Factorio to version ${{ steps.check-updates.outputs.new_version }}"
+          git push 
